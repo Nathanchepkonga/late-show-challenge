@@ -14,21 +14,37 @@ class Episode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String, nullable=False)
     number = db.Column(db.Integer, nullable=False)
-   # Relationship to Appearance
+    # Use fully qualified path for the relationship
     appearances = db.relationship('Appearance', back_populates='episode', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'date': self.date,
+            'number': self.number,
+            'appearances': [appearance.to_dict() for appearance in self.appearances]  # Uncomment to include appearances
+        }
 
 class Guest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     occupation = db.Column(db.String, nullable=False)
-    # Relationship to Appearance
+    # Use fully qualified path for the relationship
     appearances = db.relationship('Appearance', back_populates='guest', cascade='all, delete-orphan')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'occupation': self.occupation,
+            'appearances': [appearance.to_dict() for appearance in self.appearances]  # Uncomment to include appearances
+        }
 
 class Appearance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer, nullable=False)
     episode_id = db.Column(db.Integer, db.ForeignKey('episode.id'), nullable=False)
-    guest_id = db.Column(db.Integer, db.ForeignKey('guest.id'), nullable=False)  
+    guest_id = db.Column(db.Integer, db.ForeignKey('guest.id'), nullable=False)
 
     # Relationships
     guest = db.relationship('Guest', back_populates='appearances')
@@ -39,6 +55,16 @@ class Appearance(db.Model):
         if rating < 1 or rating > 5:
             raise ValueError('Rating must be between 1 and 5')
         return rating
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'rating': self.rating,
+            'episode_id': self.episode_id,
+            'guest_id': self.guest_id,
+            'episode': self.episode.to_dict(),
+            'guest': self.guest.to_dict()
+        }
 
 #### 2. **Resources and Endpoints**
 
@@ -73,40 +99,6 @@ class AppearanceResource(Resource):
         except ValueError as e:
             return {'errors': [str(e)]}, 400
         return jsonify(appearance.to_dict()), 201
-
-#### 3. **Serialization Methods**
-
-class Episode(db.Model):
-    ...
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'date': self.date,
-            'number': self.number,
-            ##'appearances': [appearance.to_dict() for appearance in self.appearances]
-        }
-
-class Guest(db.Model):
-    ...
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'occupation': self.occupation,
-           ## 'appearances': [appearance.to_dict() for appearance in self.appearances]
-        }
-
-class Appearance(db.Model):
-    ...
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'rating': self.rating,
-            'episode_id': self.episode_id,
-            'guest_id': self.guest_id,
-            'episode': self.episode.to_dict(),
-            'guest': self.guest.to_dict()
-        }
 
 #### 4. **Adding Resources to the API**
 
