@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project is a full-stack application built with Flask-RESTful for the backend and React for the frontend. It is designed to manage episodes, guests, and their appearances on a show. The application provides a RESTful API to interact with the data and a user-friendly interface for managing it.
+This project is an application built with Flask-RESTful for the backend and React for the frontend. It is designed to manage episodes, guests, and their appearances on a show. The application provides a RESTful API.
 
 ## Table of Contents
 
@@ -23,7 +23,6 @@ This project is a full-stack application built with Flask-RESTful for the backen
 ## Technologies
 
 - **Backend**: Flask, Flask-RESTful, SQLAlchemy
-- **Frontend**: React, Axios, CSS
 - **Database**: SQLAlchemy (for development), PostgreSQL (for production)
 - **Deployment**: Render.com
 - **Environment**: Python 3.x, Node.js
